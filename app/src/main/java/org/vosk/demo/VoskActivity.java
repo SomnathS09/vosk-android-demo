@@ -18,8 +18,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -32,8 +35,11 @@ import org.vosk.android.SpeechService;
 import org.vosk.android.SpeechStreamService;
 import org.vosk.android.StorageService;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -55,6 +61,7 @@ public class VoskActivity extends Activity implements
     private SpeechService speechService;
     private SpeechStreamService speechStreamService;
     private TextView resultView;
+    private EditText wavFileNameEditText;
 
     @Override
     public void onCreate(Bundle state) {
@@ -63,6 +70,7 @@ public class VoskActivity extends Activity implements
 
         // Setup layout
         resultView = findViewById(R.id.result_text);
+        wavFileNameEditText = findViewById(R.id.file_name_input);
         setUiState(STATE_START);
 
         findViewById(R.id.recognize_file).setOnClickListener(view -> recognizeFile());
@@ -206,17 +214,26 @@ public class VoskActivity extends Activity implements
         } else {
             setUiState(STATE_FILE);
             try {
-                Recognizer rec = new Recognizer(model, 16000.f, "[\"one zero zero zero one\", " +
-                        "\"oh zero one two three four five six seven eight nine\", \"[unk]\"]");
+                Recognizer rec = new Recognizer(model, 16000.f);
 
-                InputStream ais = getAssets().open(
-                        "10001-90210-01803.wav");
-                if (ais.skip(44) != 44) throw new IOException("File too short");
+                Log.d("FilePath", wavFileNameEditText.getText().toString());
+                File externalFilesDir = this.getExternalFilesDir((String)null);
 
-                speechStreamService = new SpeechStreamService(rec, ais, 16000);
-                speechStreamService.start(this);
+                if (externalFilesDir == null) {
+                    throw new IOException("cannot get external files dir, external storage state is " + Environment.getExternalStorageState());
+                } else {
+                    Log.d("FilePath","External file name is"+  this.getExternalFilesDir(null));
+                    File wavFile = new File(externalFilesDir, wavFileNameEditText.getText().toString()+".wav");
+
+                    InputStream ais = new FileInputStream(wavFile);
+                    if (ais.skip(44) != 44) throw new IOException("File too short");
+
+                    speechStreamService = new SpeechStreamService(rec, ais, 16000);
+                    speechStreamService.start(this);
+                }
             } catch (IOException e) {
                 setErrorState(e.getMessage());
+                onFinalResult("");
             }
         }
     }

@@ -14,5 +14,6 @@
     <string name="stop_file">Stop File</string>
     <string name="pause">Pause</string>
     <string name="continueRecognition">Continue</string>
+    <string name="enter_the_wav_file_name">Enter WAV file name (in data/files/)</string>
 
 </resources>
