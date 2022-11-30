@@ -32,8 +32,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Build Debug APK
-        run: .github/scripts/gradlew_recursive.sh assembleDebug
+#      - name: Build Debug APK
+#        run: .github/scripts/gradlew_recursive.sh assembleDebug
       - name : Build Release APK
         run: .github/scripts/gradlew_recursive.sh assembleRelease
 #      - name: Zip artifacts //No need to zip as actions/upload-artifact@1 also zips if multiple files
