@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.vosk.demo;
+package com.prosical.vosk;
 
 import android.Manifest;
 import android.app.Activity;
@@ -34,12 +34,12 @@ import org.vosk.android.RecognitionListener;
 import org.vosk.android.SpeechService;
 import org.vosk.android.SpeechStreamService;
 import org.vosk.android.StorageService;
+import com.prosical.vosk.R;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
